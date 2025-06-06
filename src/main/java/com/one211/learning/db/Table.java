@@ -23,7 +23,7 @@ public interface Table extends Iterable<Row> {
         }
     }
 
-    class ListBackedTable extends AbstractTable {
+    public class ListBackedTable extends AbstractTable {
 
         List<Row> rows;
         public ListBackedTable(List<Row> rows) {

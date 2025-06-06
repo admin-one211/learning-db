@@ -3,22 +3,23 @@ package com.one211.learning.db;
 public interface Expression {
     Object apply(Row row);
 
-    record Add(Expression left, Expression right) implements Expression {
+    record BinaryArithmetic(Expression left, Expression right, String operator) implements Expression {
         @Override
         public Object apply(Row row) {
-            var leftVal = (Number) left.apply(row);
-            var rightVal = (Number) right.apply(row);
-            switch (leftVal) {
-                case Integer i -> {
-                    return i + rightVal.intValue();
-                }
-                case Long l -> {
-                    return l + rightVal.longValue();
-                }
-                default -> {
-                    throw new UnsupportedOperationException("data type :" + leftVal + "not supported");
-                }
+            Object leftVal = left.apply(row);
+            Object rightVal = right.apply(row);
+            if (leftVal instanceof Number && rightVal instanceof Number) {
+                Integer l = (Integer) leftVal;
+                Integer r = (Integer) rightVal;
+                return switch (operator) {
+                    case "+" -> l + r;
+                    case "-" -> l - r;
+                    case "*" -> l * r;
+                    case "/" -> r != 0 ? l / r : null;
+                    default -> throw new IllegalArgumentException("Unknown operator: " + operator);
+                };
             }
+            throw new IllegalArgumentException("Operands must be numbers: " + leftVal + "And One is: " + rightVal);
         }
     }
 
