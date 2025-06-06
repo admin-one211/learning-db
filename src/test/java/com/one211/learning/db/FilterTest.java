@@ -16,6 +16,5 @@ public class FilterTest {
 
         var notNull1 = new Filter.NotNullFilter(new Expression.BoundedExpression(1));
         assertFalse((Boolean) notNull1.apply(testRow));
-
     }
 }
