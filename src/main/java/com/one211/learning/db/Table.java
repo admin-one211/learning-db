@@ -1,7 +1,6 @@
 package com.one211.learning.db;
 
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public interface Table extends Iterable<Row> {
     Table filter(Filter filter);
@@ -10,15 +9,42 @@ public interface Table extends Iterable<Row> {
 
     abstract class AbstractTable implements Table {
         public Table filter(Filter filter){
-            return this;
+            List<Row> result = new ArrayList<>();
+
+            for (Row r : this) {
+                if ((Boolean) filter.apply(r)) {
+                    result.add(r);
+                }
+            }
+
+            return new ListBackedTable(result);
         }
 
         public Table project(Expression... projections){
-            return this;
+            List<Row> result = new ArrayList<>();
+
+            for (Row r: this)
+            {
+                Object[] val = new Object[projections.length];
+                for (int i = 0; i < projections.length; i++)
+                {
+                    val[i] = projections[i].apply(r);
+                }
+                result.add(Row.apply(val));
+            }
+
+            return new ListBackedTable(result);
         }
 
         public Table join(Table input) {
-            return this;
+            List<Row> result = new ArrayList<>();
+            for(Row thisRow : this) {
+                for(Row thatRow : input) {
+                    Row res = thatRow.join(thatRow);
+                    result.add(res);
+                }
+            }
+            return new ListBackedTable(result);
         }
     }
 
@@ -35,4 +61,3 @@ public interface Table extends Iterable<Row> {
         }
     }
 }
-

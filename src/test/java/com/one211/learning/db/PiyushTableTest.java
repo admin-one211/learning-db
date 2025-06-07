@@ -1,40 +1,103 @@
 package com.one211.learning.db;
-import static org.junit.Assert.assertEquals;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
 
 import com.one211.learning.db.Table.ListBackedTable;
 
+import static org.junit.Assert.*;
+
 public class PiyushTableTest {
+
     @Test
-    public void TableTest() {
-        var firstRow = Row.apply("12", "21", "11");
+    public void TableFilterTest() {
+        Row row1 = Row.apply("Piyush", 22);
+        Row row2  = Row.apply("chota bhai", 15);
 
-        var secondRow = Row.apply(null);
+        var table = new Table.ListBackedTable(List.of(row1, row2));
 
-        var table = new ListBackedTable(List.of(firstRow, secondRow));
+        var ageExpression = new Expression.BoundedExpression(1);
+        var literal20 = new Expression.Literal(20);
+        var ageGreaterThan20 = new Filter.IsGraterThan(ageExpression, literal20);
 
-        // test number of rows
+        var filteredTable = table.filter(ageGreaterThan20);
+
+        List<Row> resultRows = new ArrayList<>();
+        for (Row row : filteredTable) {
+            resultRows.add(row);
+        }
+
+        assertEquals(1, resultRows.size());
+    }
+
+    @Test
+    public void TableProjectionTest() {
+        var row = Row.apply("Piyush", "class", "BCA");
+        var row1 = Row.apply("Vijay", "class", "BA");
+        var row2 = Row.apply("rohan", "class", "BSC");
+
+        var table = new Table.ListBackedTable(List.of(row, row2, row1));
+
+        var exp = new Expression.BoundedExpression(0);
+
+        var exp2 = new Expression.BoundedExpression(2);
+
+        var resultData = table.project(exp, exp2);
+
         int count = 0;
-        Row testFirstRow = null;
-        Row testSecondRow = null;
-        for(Row r : table) {
-            if(count == 0){
-                testFirstRow = r;
-            } 
-            if(count == 1 ) {
-                testSecondRow = r;
-            }
+
+        for (Row r: resultData)
+        {
             count ++;
         }
-        assertEquals(2, count);
 
-        // test first Row
-        assertEquals(firstRow, testFirstRow);
-       
-        // test Second Row 
+        assertEquals(3, count);
+
+        Row row0 = ((ListBackedTable) resultData).rows.get(0);
+        assertEquals("Piyush", row0.get(0));
+        assertEquals("BCA", row0.get(1));
+    }
+
+    @Test
+    public void TableIsNullOrNotTest() {
+        var secondRow = Row.apply(null);
+
+        var table = new ListBackedTable(List.of(secondRow));
+
+        Row testSecondRow = null;
+        for(Row r : table)
+        {
+            testSecondRow = r;
+        }
+
         assertEquals(secondRow, testSecondRow);
+    }
+
+    @Test
+    public  void TableRowsTest() {
+        var row1 = Row.apply("32", "323");
+
+        var table = new ListBackedTable(List.of(row1));
+
+        int count = 0;
+
+        for (Row r: table)
+        {
+            count++;
+        }
+
+        assertEquals(1, count);
+    }
+
+    @Test
+    public void TableJoinTest() {
+        var tab1 = Row.apply("name", "rahul", "age", "23");
+        var tab2 = Row.apply("name", "jay", "age", "32");
+
+        var newTable = tab1.join(tab2);
+
+        assertEquals(8, newTable.length());
     }
 }

@@ -1,9 +1,8 @@
 package com.one211.learning.db;
 
-import org.junit.Test;
-
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import org.junit.Test;
 
 public class FilterTest {
     @Test
@@ -23,7 +22,7 @@ public class FilterTest {
             new Expression.BoundedExpression(0),
             new Expression.BoundedExpression(1)
         );
-        assertTrue((Boolean) isEqualTest.apply(testRow));
+        assertTrue(isEqualTest.apply(testRow));
     }
 
     @Test
@@ -33,7 +32,7 @@ public class FilterTest {
             new Expression.BoundedExpression(0), 
             new Expression.BoundedExpression(1)
         );
-        assertTrue((Boolean) isNotEqualTest.apply(testRow));
+        assertTrue(isNotEqualTest.apply(testRow));
     }
 
     @Test
@@ -43,6 +42,6 @@ public class FilterTest {
             new Expression.BoundedExpression(0), 
             new Expression.BoundedExpression(1)
         );
-        assertTrue((Boolean) isGraterThanTest.apply(testRow));
+        assertTrue(isGraterThanTest.apply(testRow));
     }
 }
