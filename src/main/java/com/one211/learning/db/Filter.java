@@ -16,11 +16,25 @@ public interface Filter extends Expression {
         }
     }
 
-    record And(Filter left, Filter right) implements  Filter {
+    record AndFilter(Expression left, Expression right) implements  Filter {
 
         @Override
         public Boolean apply(Row row) {
             return (Boolean) left.apply(row) && (Boolean)right.apply(row);
         }
     }
+    record EqualFilter(Expression left, Expression right) implements Filter {
+        @Override
+        public Boolean apply(Row row) {
+            return left.apply(row).equals(right.apply(row));
+        }
+    }
+
+    record OrFilter(Expression left, Expression right) implements Filter {
+        @Override
+        public Boolean apply(Row row) {
+            return (Boolean) left.apply(row) || (Boolean) right.apply(row);
+        }
+    }
+
 }
