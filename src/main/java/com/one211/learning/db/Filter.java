@@ -20,7 +20,30 @@ public interface Filter extends Expression {
 
         @Override
         public Boolean apply(Row row) {
-            return (Boolean) left.apply(row) && (Boolean)right.apply(row);
+            return (Boolean) left.apply(row) && (Boolean) right.apply(row);
         }
+    }
+
+    record Or(Filter left, Filter right) implements  Filter {
+
+         @Override
+         public Boolean apply(Row row) {
+             return (Boolean) left.apply(row) || (Boolean) right.apply(row);
+         }
+    }
+
+    record EqualsFilter(Filter left, Filter right) implements  Filter {
+         @Override
+         public Boolean apply(Row row) {
+             return left.apply(row).equals(right.apply(row)); // checks values [.equals is a built-in java method for checking two values]
+             // return left.apply(row) == (right.apply(row)); // == for reference checking only
+         }
+    }
+
+    record NotEqualsFilter(Filter left, Filter right) implements  Filter {
+         @Override
+         public Boolean apply(Row row) {
+             return !left.apply(row).equals(right.apply(row));
+         }
     }
 }

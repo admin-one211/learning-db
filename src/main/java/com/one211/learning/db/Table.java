@@ -35,5 +35,9 @@ public interface Table extends Iterable<Row> {
             return rows.stream().iterator();
         }
     }
+
+
+
+
 }
 
