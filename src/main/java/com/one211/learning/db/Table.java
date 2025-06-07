@@ -1,6 +1,8 @@
 package com.one211.learning.db;
 
+import javax.swing.*;
 import javax.swing.plaf.ListUI;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -10,8 +12,16 @@ public interface Table extends Iterable<Row> {
     Table join(Table input);
 
     abstract class AbstractTable implements Table {
+
+       List<Row> rows;
         public Table filter(Filter filter){
-            return this;
+            List<Row> filteredRows = new ArrayList<>();
+           for(Row row:rows){
+               if ((Boolean)  filter.apply(row)){
+                   filteredRows.add(row);
+               }
+           }
+            return new ListBackedTable(filteredRows);
         }
 
         public Table project(Expression... projections){
