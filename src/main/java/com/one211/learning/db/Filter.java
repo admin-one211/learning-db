@@ -32,7 +32,7 @@ public interface Filter extends Expression {
          }
     }
 
-    record EqualsFilter(Filter left, Filter right) implements  Filter {
+    record EqualsFilter(Expression left, Expression right) implements  Filter {
          @Override
          public Boolean apply(Row row) {
              return left.apply(row).equals(right.apply(row)); // checks values [.equals is a built-in java method for checking two values]
@@ -40,10 +40,17 @@ public interface Filter extends Expression {
          }
     }
 
-    record NotEqualsFilter(Filter left, Filter right) implements  Filter {
+    record NotEqualsFilter(Expression left, Expression right) implements  Filter {
          @Override
          public Boolean apply(Row row) {
              return !left.apply(row).equals(right.apply(row));
          }
+    }
+
+    record IsGraterThan(Expression expression1, Expression expression2) implements Filter {
+        @Override
+        public Boolean apply(Row row) {
+            return (Integer) expression1.apply(row) > (Integer) expression2.apply(row);
+        }
     }
 }

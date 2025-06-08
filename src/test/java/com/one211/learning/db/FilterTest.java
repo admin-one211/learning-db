@@ -35,7 +35,7 @@ public class FilterTest {
         var left = new Expression.BoundedExpression(0);
         var right = new Expression.BoundedExpression(1);
 
-        var equalsFilter = new Filter.EqualsFilter(row -> left.apply(row), row -> right.apply(row));
+        var equalsFilter = new Filter.EqualsFilter(left, right);
 
         assertTrue(equalsFilter.apply(testRow));
     }
@@ -47,7 +47,8 @@ public class FilterTest {
         var left = new Expression.BoundedExpression(0);
         var right = new Expression.BoundedExpression(1);
 
-        var notEquals = new Filter.NotEqualsFilter(row -> left.apply(row), row -> right.apply(row));
+        var notEquals = new Filter.NotEqualsFilter(left, right);
+
         assertFalse(notEquals.apply(testRow));
     }
 }

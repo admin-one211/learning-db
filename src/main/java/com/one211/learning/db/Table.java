@@ -16,7 +16,7 @@ public interface Table extends Iterable<Row> {
        List<Row> rows;
         public Table filter(Filter filter){
             List<Row> filteredRows = new ArrayList<>();
-           for(Row row:rows){
+           for(Row row: this){
                if ((Boolean)  filter.apply(row)){
                    filteredRows.add(row);
                }
@@ -24,12 +24,28 @@ public interface Table extends Iterable<Row> {
             return new ListBackedTable(filteredRows);
         }
 
+
         public Table project(Expression... projections){
-            return this;
+            List<Row> projected = new ArrayList<>();
+            for (Row row : this) {
+                Object[] values = new Object[projections.length];
+                for (int i = 0; i < projections.length; i++) {
+                    values[i] = projections[i].apply(row);
+                }
+                projected.add(Row.apply(values));
+            }
+            return new ListBackedTable(projected);
         }
 
         public Table join(Table input) {
-            return this;
+            List<Row> result = new ArrayList<>();
+            for(Row thisRow : this) {
+                for(Row thatRow : input) {
+                    Row res = thatRow.join(thatRow);
+                    result.add(res);
+                }
+            }
+            return new ListBackedTable(result);
         }
     }
 
