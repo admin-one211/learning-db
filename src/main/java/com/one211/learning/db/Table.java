@@ -33,9 +33,20 @@ public interface Table extends Iterable<Row> {
         }
 
         public Table join(Table input) {
-            return this;
+            List<Row> result = new ArrayList<>();
+            for(Row thisRow : this) {
+                for(Row thatRow : input) {
+                    Row res = thatRow.join(thatRow);
+                    result.add(res);
+                }
+            }
+            return new ListBackedTable(result);
         }
     }
+
+
+
+
 
     class ListBackedTable extends AbstractTable {
 
