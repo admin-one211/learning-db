@@ -1,15 +1,13 @@
 package com.one211.learning.db;
 
-import javax.swing.*;
-import javax.swing.plaf.ListUI;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public interface Table extends Iterable<Row> {
     Table filter(Filter filter);
     Table project(Expression... projections);
     Table join(Table input);
+
+    Table aggregate(Expression groupBy, AggregateExpression... expression);
 
     abstract class AbstractTable implements Table {
 
@@ -47,7 +45,48 @@ public interface Table extends Iterable<Row> {
             }
             return new ListBackedTable(result);
         }
+
+        @Override
+        public Table aggregate(Expression groupBy, AggregateExpression... expressions) {
+
+            Map<Object, AggregateExpression[]> groups = new LinkedHashMap<>();
+
+            for (Row row : this) {
+                Object key = groupBy.apply(row);
+
+                if (!groups.containsKey(key)) {
+                    AggregateExpression[] freshAggregates = new AggregateExpression[expressions.length];
+                    for (int i = 0; i < expressions.length; i++) {
+                        try {
+                            freshAggregates[i] = expressions[i].getClass()
+                                    .getConstructor(Expression.class)
+                                    .newInstance(((AggregateExpression) expressions[i]));
+                        } catch (Exception e) {
+                            throw new RuntimeException("Error creating aggregate expression: " + e.getMessage(), e);
+                        }
+                    }
+                    groups.put(key, freshAggregates);
+                }
+
+                for (AggregateExpression agg : groups.get(key)) {
+                    agg.apply(row);
+                }
+            }
+
+            List<Row> resultRows = new ArrayList<>();
+            for (var entry : groups.entrySet()) {
+                List<Object> values = new ArrayList<>();
+                values.add(entry.getKey());
+                for (AggregateExpression agg : entry.getValue()) {
+                    values.add(agg.finalValue());
+                }
+                resultRows.add(Row.apply(values.toArray()));
+            }
+            return new ListBackedTable(resultRows);
+        }
+
     }
+
 
     class ListBackedTable extends AbstractTable {
 
