@@ -16,6 +16,7 @@ public interface Expression {
                     case "-" -> l - r;
                     case "*" -> l * r;
                     case "/" -> r != 0 ? l / r : null;
+                    case "%" -> r != 0 ? l % r : null;
                     default -> throw new IllegalArgumentException("Unknown operator: " + operator);
                 };
             }

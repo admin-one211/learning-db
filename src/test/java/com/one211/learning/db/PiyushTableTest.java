@@ -12,7 +12,7 @@ import static org.junit.Assert.*;
 public class PiyushTableTest {
 
     @Test
-    public void TableFilterTest() {
+    public void tableFilterTest() {
         Row row1 = Row.apply("Piyush", 22);
         Row row2  = Row.apply("chota bhai", 15);
 
@@ -33,7 +33,7 @@ public class PiyushTableTest {
     }
 
     @Test
-    public void TableProjectionTest() {
+    public void tableProjectionTest() {
         var row = Row.apply("Piyush", "class", "BCA");
         var row1 = Row.apply("Vijay", "class", "BA");
         var row2 = Row.apply("rohan", "class", "BSC");
@@ -61,7 +61,7 @@ public class PiyushTableTest {
     }
 
     @Test
-    public void TableIsNullOrNotTest() {
+    public void tableIsNullOrNotTest() {
         var secondRow = Row.apply(null);
 
         var table = new ListBackedTable(List.of(secondRow));
@@ -76,7 +76,7 @@ public class PiyushTableTest {
     }
 
     @Test
-    public  void TableRowsTest() {
+    public  void tableRowsTest() {
         var row1 = Row.apply("32", "323");
 
         var table = new ListBackedTable(List.of(row1));
@@ -92,7 +92,7 @@ public class PiyushTableTest {
     }
 
     @Test
-    public void TableJoinTest() {
+    public void rowJoinTest() {
         var tab1 = Row.apply("name", "rahul", "age", "23");
         var tab2 = Row.apply("name", "jay", "age", "32");
 

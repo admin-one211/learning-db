@@ -10,7 +10,6 @@ public interface Table extends Iterable<Row> {
     abstract class AbstractTable implements Table {
         public Table filter(Filter filter){
             List<Row> result = new ArrayList<>();
-
             for (Row r : this) {
                 if ((Boolean) filter.apply(r)) {
                     result.add(r);
