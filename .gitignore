@@ -19,6 +19,8 @@
 *.tar.gz
 *.rar
 
-# Idea & Target File
+# Idea File
 .idea
+
+# Target File
 target
