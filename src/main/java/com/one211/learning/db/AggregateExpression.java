@@ -74,23 +74,31 @@ public interface AggregateExpression extends Expression {
 
     public final class Count implements AggregateExpression {
         private final Expression expression;
-        Integer count = 0;
+        private int count = 0;
+
+
         public Count(Expression expression) {
             this.expression = expression;
         }
+
         @Override
         public Object finalValue() {
             return count;
         }
+
         @Override
         public Object apply(Row row) {
-            Object current = expression.apply(row);
-            if ( count == null) {
-                count = 0;
+
+            if (expression != null) {
+                Object value = expression.apply(row);
+                if (value != null) {
+                    count++;
+                }
             } else {
                 count++;
             }
             return count;
         }
     }
+
 }

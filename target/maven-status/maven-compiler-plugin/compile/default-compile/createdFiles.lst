@@ -1,2 +1,7 @@
 com\one211\learning\db\SimpleCsvReader.class
 com\one211\learning\db\CsvReader.class
+com\one211\learning\db\AggregateExpression.class
+com\one211\learning\db\AggregateExpression$Count.class
+com\one211\learning\db\AggregateExpression$Max.class
+com\one211\learning\db\AggregateExpression$Sum.class
+com\one211\learning\db\AggregateExpression$Min.class

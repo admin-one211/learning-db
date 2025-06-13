@@ -15,6 +15,7 @@ public class ShrikantTest {
         var testRow2 = Row.apply("two", 2, "two");
         var listBackedTable = new Table.ListBackedTable(List.of(testRow1, testRow2));
 
+
         // number of rows
         var count = 0;
         for(var row : listBackedTable){
@@ -70,7 +71,6 @@ public class ShrikantTest {
         Expression nameProjection = new Expression.BoundedExpression(0);
 
         Table projected = table.project(nameProjection);
-
         int count = 0;
         for (Row r: projected)
         {

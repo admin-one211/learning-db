@@ -101,8 +101,5 @@ public interface Table extends Iterable<Row> {
         }
     }
 
-
-
-
 }
 
