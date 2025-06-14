@@ -202,4 +202,25 @@ public class PiyushTableTest {
         assertEquals(20, rows.get(0).get(1)); // Group 1 -> min(50, 20)
         assertEquals(30, rows.get(1).get(1)); // Group 2 -> min(80, 30)
     }
+
+    @Test
+    public void csvTableTest() {
+        var csvTable = Table.CsvTable.fromCsv("src/examples/csv/piyushCsvFile.csv");
+
+        List<Row> rows = csvTable.getRows();
+
+        assertEquals(3, rows.size());
+
+        assertEquals("FirstName", rows.get(0).get(0));
+        assertEquals("LastName", rows.get(0).get(1));
+        assertEquals("age", rows.get(0).get(2));
+
+        assertEquals("Aarush", rows.get(1).get(0));
+        assertEquals("Jain", rows.get(1).get(1));
+        assertEquals("22", rows.get(1).get(2));
+
+        assertEquals("Aayush", rows.get(2).get(0));
+        assertEquals("Rai", rows.get(2).get(1));
+        assertEquals("27", rows.get(2).get(2));
+    }
 }

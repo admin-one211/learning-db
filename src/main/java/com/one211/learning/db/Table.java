@@ -1,5 +1,12 @@
 package com.one211.learning.db;
 
+import com.opencsv.CSVReader;
+import com.opencsv.CSVReaderBuilder;
+import com.opencsv.CSVWriter;
+
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.StringWriter;
 import java.util.*;
 
 public interface Table extends Iterable<Row> {
@@ -113,6 +120,41 @@ public interface Table extends Iterable<Row> {
         @Override
         public Iterator<Row> iterator() {
             return rows.stream().iterator();
+        }
+    }
+
+    public class CsvTable extends AbstractTable {
+        private final List<Row> rows;
+
+        public CsvTable(List<Row> rows) {
+            this.rows = rows;
+        }
+
+        public static CsvTable fromCsv(String path) {
+            List<Row> rows = new ArrayList<>();
+
+            try (CSVReader reader = new CSVReaderBuilder(new FileReader(path)).build()) {
+                Iterator<String[]> iterator = reader.iterator();
+
+                while (iterator.hasNext()) {
+                    String[] csvRow = iterator.next();
+                    rows.add(Row.apply((Object[]) csvRow)); // convert to Row
+                }
+
+            } catch (IOException e) {
+                System.err.println("Error reading CSV: " + e.getMessage());
+            }
+
+            return new CsvTable(rows);
+        }
+
+        @Override
+        public Iterator<Row> iterator() {
+            return rows.iterator(); // or rows.stream().iterator()
+        }
+
+        public List<Row> getRows() {
+            return rows;
         }
     }
 }
