@@ -4,7 +4,9 @@ import junit.framework.TestCase;
 import org.junit.Test;
 import org.junit.jupiter.api.Disabled;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -74,4 +76,21 @@ public class TableTest  {
 
 
     }
+
+
+
+        @Test
+        public void testFromJson() throws IOException {
+            Table table = Table.AbstractTable.fromJson("Json_data/data.json");
+
+            Iterator<Row> it = table.iterator();
+            Row row1 = it.next();
+            Row row2 = it.next();
+
+            assertEquals("Alice", row1.get(0));
+            assertEquals(30, row1.get(1));
+            assertEquals("Bob", row2.get(0));
+            assertEquals(25, row2.get(1));
+        }
+
 }
