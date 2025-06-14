@@ -1,30 +1,50 @@
 package com.one211.learning.db;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.*;
+import java.nio.file.*;
+import java.util.*;
 
-public class SimpleCsvReader implements CsvReader {
+public class SimpleCsvReader implements Iterable<Row> {
+    private final BufferedReader reader;
+    private final String delimiter = ",";
+
+    public SimpleCsvReader(String path) throws IOException {
+        this.reader = Files.newBufferedReader(Paths.get(path));
+    }
 
     @Override
-    public List<Row> readCsv(String filePath) throws IOException {
-        List<Row> rows = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
-            String line;
-            boolean isHeader = true;
+    public Iterator<Row> iterator() {
+        return new Iterator<Row>() {
+            String nextLine = advance();
 
-            while ((line = br.readLine()) != null) {
-                if (isHeader) {
-                    isHeader = false;
-                    continue;
+            private String advance() {
+                try {
+                    return reader.readLine();
+                } catch (IOException e) {
+                    throw new UncheckedIOException(e);
                 }
-
-                String[] values = line.split(",");
-                rows.add(Row.apply((Object[]) values));
             }
-        }
-        return rows;
+
+            @Override
+            public boolean hasNext() {
+                if (nextLine == null) {
+                    closeQuietly();
+                    return false;
+                }
+                return true;
+            }
+
+            @Override
+            public Row next() {
+                if (!hasNext()) throw new NoSuchElementException();
+                String[] values = nextLine.split(delimiter, -1);
+                nextLine = advance();
+                return Row.apply((Object[]) values);
+            }
+
+            private void closeQuietly() {
+                try { reader.close(); } catch (IOException ignored) {}
+            }
+        };
     }
 }

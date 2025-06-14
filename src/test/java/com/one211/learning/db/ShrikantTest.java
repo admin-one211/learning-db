@@ -3,10 +3,10 @@ package com.one211.learning.db;
 import  org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class ShrikantTest {
     @Test
@@ -26,16 +26,38 @@ public class ShrikantTest {
     }
 
     @Test
-    public void testCsvRowCountAndPrint() throws Exception {
-        CsvReader reader = new SimpleCsvReader();
+    public void testCsvRowContentUsingIterator() throws Exception {
         String filePath = "src/example/csv/test.csv";
+        SimpleCsvReader csvReader = new SimpleCsvReader(filePath);
+        Iterator<Row> iterator = csvReader.iterator();
 
-        List<Row> rows = reader.readCsv(filePath);
+        assertTrue(iterator.hasNext());
+        Row header = iterator.next();
+        assertEquals("ID", header.get(0));
+        assertEquals("Name", header.get(1));
+        assertEquals("Age", header.get(2));
 
-        assertEquals(3, rows.size());
+        assertTrue(iterator.hasNext());
+        Row row1 = iterator.next();
+        assertEquals("1", row1.get(0));
+        assertEquals("Shivam", row1.get(1));
+        assertEquals("20", row1.get(2));
 
-        System.out.println("Rows: " + rows.size());
+        assertTrue(iterator.hasNext());
+        Row row2 = iterator.next();
+        assertEquals("2", row2.get(0));
+        assertEquals("Dev", row2.get(1));
+        assertEquals("25", row2.get(2));
+
+        assertTrue(iterator.hasNext());
+        Row row3 = iterator.next();
+        assertEquals("3", row3.get(0));
+        assertEquals("Honey", row3.get(1));
+        assertEquals("19", row3.get(2));
+
+        assertFalse(iterator.hasNext());
     }
+
 
     @Test
     public void testFilterTable() {
