@@ -21,7 +21,7 @@ public class AggregateExpressionTests {
 
     @Test
     public void testCount() {
-        AggregateExpression count = new AggregateExpression.Count();
+        AggregateExpression count = new AggregateExpression.Count(new Expression.BoundedExpression(0));
 
         count.apply(Row.apply("Hii"));
         count.apply(Row.apply("SOO"));

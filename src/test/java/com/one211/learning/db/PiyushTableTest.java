@@ -1,8 +1,9 @@
 package com.one211.learning.db;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.IntStream;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.one211.learning.db.Table.ListBackedTable;
@@ -99,5 +100,106 @@ public class PiyushTableTest {
         var newTable = tab1.join(tab2);
 
         assertEquals(8, newTable.length());
+    }
+
+    @Test
+    public void aggrigateSumTest() {
+        Row r1 = Row.apply("A", 10);
+        Row r2 = Row.apply("A", 15);
+        Row r3 = Row.apply("B", 5);
+        Row r4 = Row.apply("C", 30);
+        Row r5 = Row.apply("B", 15);
+
+        Table table = new ListBackedTable(List.of(r1, r2, r3, r4, r5));
+
+        var groupBy = new Expression.BoundedExpression(0);
+
+        var sum = new AggregateExpression.Sum(new Expression.BoundedExpression(1));
+
+        Table grouped = table.aggregate(groupBy, sum);
+
+        List<Row> resultRows = new ArrayList<>();
+        for (Row r : grouped) {
+            resultRows.add(r);
+        }
+
+        assertEquals(3, resultRows.size());
+
+        assertEquals("A", resultRows.get(0).get(0));
+        assertEquals(25.0, resultRows.get(0).get(1));
+
+        assertEquals("B", resultRows.get(1).get(0));
+        assertEquals(20.0, resultRows.get(1).get(1));
+
+        assertEquals("C", resultRows.get(2).get(0));
+        assertEquals(30.0, resultRows.get(2).get(1));
+    }
+
+    @Test
+    public void aggrigateCountTest() {
+        Row r1 = Row.apply("A", 10);
+        Row r2 = Row.apply("B", 5);
+        Row r3 = Row.apply("C", 30);
+        Row r4 = Row.apply("D", 15);
+
+        Table table = new ListBackedTable(List.of(r1, r2, r3, r4));
+
+        var groupBy = new Expression.BoundedExpression(0);
+
+        var count = new AggregateExpression.Count(new Expression.BoundedExpression(1));
+
+        Table grouped = table.aggregate(groupBy, count);
+
+        List<Row> resultRows = new ArrayList<>();
+        for (Row r : grouped) {
+            resultRows.add(r);
+        }
+
+        assertEquals(4, resultRows.size());
+    }
+
+    @Test
+    public void aggregateMaxTest() {
+        Row row1 = Row.apply(1, 50);
+        Row row2 = Row.apply(1, 20);
+        Row row3 = Row.apply(2, 80);
+        Row row4 = Row.apply(2, 30);
+
+        Table table = new ListBackedTable(List.of(row1, row2, row3, row4));
+
+        Expression groupBy = new Expression.BoundedExpression(0);
+        AggregateExpression maxExpr = new AggregateExpression.Max(new Expression.BoundedExpression(1));
+
+        Table result = table.aggregate(groupBy, maxExpr);
+
+        List<Row> rows = new ArrayList<>();
+        result.iterator().forEachRemaining(rows::add);
+
+        // Verify max per group
+        assertEquals(50, rows.get(0).get(1)); // Group 1 -> max(50, 20)
+        assertEquals(80, rows.get(1).get(1)); // Group 2 -> max(80, 30)
+    }
+
+
+    @Test
+    public void aggregateMinTest() {
+        Row row1 = Row.apply(1, 50);
+        Row row2 = Row.apply(1, 20);
+        Row row3 = Row.apply(2, 80);
+        Row row4 = Row.apply(2, 30);
+
+        Table table = new ListBackedTable(List.of(row1, row2, row3, row4));
+
+        Expression groupBy = new Expression.BoundedExpression(0);
+        AggregateExpression minExpr = new AggregateExpression.Min(new Expression.BoundedExpression(1));
+
+        Table result = table.aggregate(groupBy, minExpr);
+
+        List<Row> rows = new ArrayList<>();
+        result.iterator().forEachRemaining(rows::add);
+
+        // Verify min per group
+        assertEquals(20, rows.get(0).get(1)); // Group 1 -> min(50, 20)
+        assertEquals(30, rows.get(1).get(1)); // Group 2 -> min(80, 30)
     }
 }
