@@ -60,7 +60,7 @@ public interface Table extends Iterable<Row> {
                         try {
                             freshAggregates[i] = expressions[i].getClass()
                                     .getConstructor(Expression.class)
-                                    .newInstance(((AggregateExpression) expressions[i]));
+                                    .newInstance(((AggregateExpression) expressions[i]).getExpression());
                         } catch (Exception e) {
                             throw new RuntimeException("Error creating aggregate expression: " + e.getMessage(), e);
                         }

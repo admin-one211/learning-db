@@ -2,6 +2,7 @@ package com.one211.learning.db;
 
 public interface AggregateExpression extends Expression {
     Object finalValue();
+    Expression getExpression();
 
     public final class Min implements AggregateExpression {
         private final Expression expression;
@@ -26,6 +27,12 @@ public interface AggregateExpression extends Expression {
             }
             return state;
         }
+
+        @Override
+        public Expression getExpression() {
+            return expression;
+        }
+
     }
 
     public final class Max implements AggregateExpression {
@@ -48,29 +55,41 @@ public interface AggregateExpression extends Expression {
             }
             return state;
         }
+
+        @Override
+        public Expression getExpression() {
+            return expression;
+        }
+
     }
 
     public final class Sum implements AggregateExpression {
         private final Expression expression;
-        Integer sum = 0;
+        private int sum = 0;
+
         public Sum(Expression expression) {
             this.expression = expression;
         }
+
         @Override
         public Object finalValue() {
             return sum;
         }
+
         @Override
         public Object apply(Row row) {
             Object current = expression.apply(row);
-            if (sum == null) {
-                sum = 0;
-            } else {
-                sum += (Integer) current;
-            }
+            sum += (Integer) current;
             return sum;
         }
+
+        @Override
+        public Expression getExpression() {
+            return expression;
+        }
     }
+
+
 
     public final class Count implements AggregateExpression {
         private final Expression expression;
@@ -99,6 +118,12 @@ public interface AggregateExpression extends Expression {
             }
             return count;
         }
+        @Override
+        public Expression getExpression() {
+            return expression;
+        }
+
+
     }
 
 }

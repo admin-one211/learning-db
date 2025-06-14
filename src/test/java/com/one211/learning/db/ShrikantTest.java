@@ -119,4 +119,99 @@ public class ShrikantTest {
 
         assertEquals(8, newTable.length());
     }
+
+
+    @Test
+    public void testMin() {
+        Table table = new Table.ListBackedTable(List.of(
+                Row.apply("A", 5),
+                Row.apply("A", 3),
+                Row.apply("A", 9),
+                Row.apply("B", 8),
+                Row.apply("B", 2)
+        ));
+
+        Table result = table.aggregate(
+                new Expression.BoundedExpression(0),
+                new AggregateExpression.Min(new Expression.BoundedExpression(1))
+        );
+
+        List<Row> resultRows = ((Table.ListBackedTable) result).rows;
+
+        assertEquals("A", resultRows.get(0).get(0));
+        assertEquals(3, resultRows.get(0).get(1));
+        assertEquals("B", resultRows.get(1).get(0));
+        assertEquals(2, resultRows.get(1).get(1));
+    }
+
+    @Test
+    public void testMax() {
+        Table table = new Table.ListBackedTable(List.of(
+                Row.apply("A", 1),
+                Row.apply("A", 7),
+                Row.apply("A", 5),
+                Row.apply("B", 3),
+                Row.apply("B", 9)
+        ));
+
+        Table result = table.aggregate(
+                new Expression.BoundedExpression(0),
+                new AggregateExpression.Max(new Expression.BoundedExpression(1))
+        );
+
+        List<Row> resultRows = ((Table.ListBackedTable) result).rows;
+
+        assertEquals("A", resultRows.get(0).get(0));
+        assertEquals(7, resultRows.get(0).get(1));
+        assertEquals("B", resultRows.get(1).get(0));
+        assertEquals(9, resultRows.get(1).get(1));
+    }
+
+    @Test
+    public void testSum() {
+        Table table = new Table.ListBackedTable(List.of(
+                Row.apply("X", 10),
+                Row.apply("X", 20),
+                Row.apply("X", 30),
+                Row.apply("Y", 5),
+                Row.apply("Y", 15)
+        ));
+
+        Table result = table.aggregate(
+                new Expression.BoundedExpression(0),
+                new AggregateExpression.Sum(new Expression.BoundedExpression(1))
+        );
+
+        List<Row> resultRows = ((Table.ListBackedTable) result).rows;
+
+        assertEquals("X", resultRows.get(0).get(0));
+        assertEquals(60, resultRows.get(0).get(1));
+        assertEquals("Y", resultRows.get(1).get(0));
+        assertEquals(20, resultRows.get(1).get(1));
+    }
+
+
+    @Test
+    public void testCount() {
+        Table table = new Table.ListBackedTable(List.of(
+                Row.apply("A", 1),
+                Row.apply("A", 2),
+                Row.apply("A", 3),
+                Row.apply("B", 4),
+                Row.apply("B", 5)
+        ));
+
+        Table result = table.aggregate(
+                new Expression.BoundedExpression(0),
+                new AggregateExpression.Count(new Expression.BoundedExpression(1))
+        );
+
+        List<Row> resultRows = ((Table.ListBackedTable) result).rows;
+
+        assertEquals("A", resultRows.get(0).get(0));
+        assertEquals(3, resultRows.get(0).get(1));
+        assertEquals("B", resultRows.get(1).get(0));
+        assertEquals(2, resultRows.get(1).get(1));
+    }
+
 }
